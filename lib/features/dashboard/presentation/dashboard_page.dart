@@ -7,6 +7,7 @@ import '../../../core/theme/app_semantic_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/page_layout.dart';
 import '../../../core/widgets/status_badge.dart';
+import '../../../l10n/l10n.dart';
 import '../../tasks/presentation/task_list_view_model.dart';
 
 class DashboardPage extends ConsumerWidget {
@@ -21,45 +22,48 @@ class DashboardPage extends ConsumerWidget {
         .length;
 
     return PageLayout(
-      title: '工程概览',
-      subtitle: '一套可运行、可测试、便于团队和 AI 持续扩展的 Flutter 模板。',
+      title: context.l10n.dashboardTitle,
+      subtitle: context.l10n.dashboardSubtitle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _MetricGrid(
             items: [
               _Metric(
-                label: '架构模式',
+                label: context.l10n.architecturePattern,
                 value: 'MVVM',
-                detail: '按业务功能垂直切分',
+                detail: context.l10n.featureFirstDetail,
                 icon: Icons.layers_outlined,
                 color: Theme.of(context).colorScheme.primary,
               ),
               _Metric(
-                label: '示例任务',
+                label: context.l10n.sampleTasks,
                 value: taskCount?.toString() ?? '...',
-                detail: '${completedCount ?? 0} 条已完成',
+                detail: context.l10n.completedTaskCount(completedCount ?? 0),
                 icon: Icons.checklist,
                 color: context.semanticColors.success,
               ),
               _Metric(
-                label: '主题模式',
-                value: '3',
-                detail: '系统 / 亮色 / 暗色',
+                label: context.l10n.themeMode,
+                value: context.l10n.themeModeCount,
+                detail: context.l10n.themeModeDetail,
                 icon: Icons.palette_outlined,
                 color: Theme.of(context).colorScheme.secondary,
               ),
               _Metric(
-                label: '核心依赖',
+                label: context.l10n.coreDependencies,
                 value: '4',
-                detail: '均有明确职责边界',
+                detail: context.l10n.clearResponsibilities,
                 icon: Icons.extension_outlined,
                 color: Theme.of(context).colorScheme.tertiary,
               ),
             ],
           ),
           SizedBox(height: context.spacing.lg),
-          Text('开始使用', style: Theme.of(context).textTheme.titleLarge),
+          Text(
+            context.l10n.getStarted,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           SizedBox(height: context.spacing.md),
           Card(
             child: Padding(
@@ -70,20 +74,20 @@ class DashboardPage extends ConsumerWidget {
                 children: [
                   _ActionItem(
                     icon: Icons.playlist_add_check,
-                    title: '体验 MVVM',
-                    subtitle: '查看异步任务增删改',
+                    title: context.l10n.tryMvvm,
+                    subtitle: context.l10n.tryMvvmSubtitle,
                     onTap: () => context.go(AppRoutes.tasks),
                   ),
                   _ActionItem(
                     icon: Icons.account_tree_outlined,
-                    title: '理解架构',
-                    subtitle: '查看依赖与目录职责',
+                    title: context.l10n.understandArchitecture,
+                    subtitle: context.l10n.understandArchitectureSubtitle,
                     onTap: () => context.go(AppRoutes.about),
                   ),
                   _ActionItem(
                     icon: Icons.contrast,
-                    title: '切换主题',
-                    subtitle: '验证主题持久化',
+                    title: context.l10n.switchTheme,
+                    subtitle: context.l10n.switchThemeSubtitle,
                     onTap: () => context.go(AppRoutes.settings),
                   ),
                 ],
@@ -99,7 +103,7 @@ class DashboardPage extends ConsumerWidget {
                 foregroundColor: context.semanticColors.onInfo,
               ),
               SizedBox(width: context.spacing.sm),
-              const Expanded(child: Text('仓库根目录的 AGENTS.md 是 AI 开发的统一入口。')),
+              Expanded(child: Text(context.l10n.aiReadyDescription)),
             ],
           ),
         ],

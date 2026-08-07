@@ -2,33 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/router.dart';
+import '../../../l10n/l10n.dart';
 
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.child});
 
   final Widget child;
 
-  static const _destinations = [
+  List<_Destination> _destinations(BuildContext context) => [
     _Destination(
-      label: '概览',
+      label: context.l10n.navDashboard,
       icon: Icons.dashboard_outlined,
       selectedIcon: Icons.dashboard,
       path: AppRoutes.dashboard,
     ),
     _Destination(
-      label: '任务示例',
+      label: context.l10n.navTasks,
       icon: Icons.checklist_outlined,
       selectedIcon: Icons.checklist,
       path: AppRoutes.tasks,
     ),
     _Destination(
-      label: '工程说明',
+      label: context.l10n.navAbout,
       icon: Icons.account_tree_outlined,
       selectedIcon: Icons.account_tree,
       path: AppRoutes.about,
     ),
     _Destination(
-      label: '设置',
+      label: context.l10n.navSettings,
       icon: Icons.settings_outlined,
       selectedIcon: Icons.settings,
       path: AppRoutes.settings,
@@ -37,8 +38,9 @@ class AppShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final destinations = _destinations(context);
     final path = GoRouterState.of(context).uri.path;
-    final selectedIndex = _indexForPath(path);
+    final selectedIndex = _indexForPath(path, destinations);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -70,9 +72,9 @@ class AppShell extends StatelessWidget {
                     ),
                   ),
                   onDestinationSelected: (index) =>
-                      context.go(_destinations[index].path),
+                      context.go(destinations[index].path),
                   destinations: [
-                    for (final destination in _destinations)
+                    for (final destination in destinations)
                       NavigationRailDestination(
                         icon: Icon(destination.icon),
                         selectedIcon: Icon(destination.selectedIcon),
@@ -88,9 +90,9 @@ class AppShell extends StatelessWidget {
               : NavigationBar(
                   selectedIndex: selectedIndex,
                   onDestinationSelected: (index) =>
-                      context.go(_destinations[index].path),
+                      context.go(destinations[index].path),
                   destinations: [
-                    for (final destination in _destinations)
+                    for (final destination in destinations)
                       NavigationDestination(
                         icon: Icon(destination.icon),
                         selectedIcon: Icon(destination.selectedIcon),
@@ -103,8 +105,8 @@ class AppShell extends StatelessWidget {
     );
   }
 
-  int _indexForPath(String path) {
-    final index = _destinations.indexWhere((item) => item.path == path);
+  int _indexForPath(String path, List<_Destination> destinations) {
+    final index = destinations.indexWhere((item) => item.path == path);
     return index < 0 ? 0 : index;
   }
 }

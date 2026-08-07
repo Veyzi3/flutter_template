@@ -1,4 +1,4 @@
-# Hale Flutter MVVM Template
+# Flutter MVVM Template
 
 一个面向真实项目的 Flutter 工程化模板。基于 feature-first MVVM 组织代码，内置状态管理、依赖注入、声明式路由、主题、网络、环境配置、测试和 GitHub CI，可作为新项目的起点，而不是只展示计数器的 Demo。
 
@@ -9,7 +9,7 @@
 - **清晰分层**：`presentation -> domain <- data`，功能按业务垂直切分
 - **状态与依赖注入**：Riverpod `Notifier` / `AsyncNotifier` 与 Provider override
 - **声明式导航**：go_router、ShellRoute、移动端 NavigationBar 和宽屏 NavigationRail
-- **主题系统**：Material 3、亮/暗主题、语义色、统一间距与主题偏好持久化
+- **主题与多语言**：Material 3、亮/暗主题、简体中文/英文和偏好持久化
 - **网络基础设施**：Dio、超时、可控请求日志和面向领域的错误转换
 - **类型化配置**：通过 `--dart-define` 区分开发、预发布和生产环境
 - **质量保障**：强化 lint、单元测试、Widget 测试、覆盖率和 GitHub Actions
@@ -55,6 +55,7 @@ lib/
     config/                    # 编译期环境配置与校验
     errors/                    # 跨层异常类型
     logging/                   # 可替换日志边界
+    localization/             # 语言选择与持久化
     network/                   # Dio、拦截器和错误映射
     theme/                     # ThemeData、语义色和间距
     widgets/                   # 无业务语义的公共组件
@@ -63,6 +64,7 @@ lib/
     domain/                    # 实体、Repository 接口、业务规则
     presentation/              # Page、Widget、Riverpod ViewModel
 test/                          # 与 lib 结构对应的测试
+lib/l10n/                      # ARB 翻译资源和生成的本地化代码
 docs/architecture.md           # 架构原则和扩展指南
 ```
 
@@ -88,6 +90,14 @@ flutter analyze
 flutter test
 flutter test --coverage
 ```
+
+修改 `lib/l10n/app_zh.arb` 或 `app_en.arb` 后生成本地化代码：
+
+```powershell
+flutter gen-l10n
+```
+
+界面文案通过 `context.l10n` 访问。新增 key 时必须同时补充中文和英文；用户可以在设置页选择跟随系统、中文或 English，选择会持久化。
 
 GitHub Actions 会在 push 到 `main` 和 Pull Request 时执行依赖安装、格式检查、静态分析和带覆盖率的测试。Dependabot 每周检查 Dart 依赖、每月检查 Actions 版本。
 

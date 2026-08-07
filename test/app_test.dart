@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_template/app/app.dart';
+import 'package:flutter_template/core/localization/locale_controller.dart';
 import 'package:flutter_template/features/tasks/data/in_memory_task_repository.dart';
 import 'package:flutter_template/features/tasks/presentation/task_list_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,6 +11,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          localeRepositoryProvider.overrideWithValue(
+            _TestLocaleRepository(const Locale('zh')),
+          ),
           taskRepositoryProvider.overrideWithValue(
             InMemoryTaskRepository(fetchDelay: Duration.zero),
           ),
@@ -31,7 +35,12 @@ void main() {
     );
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [taskRepositoryProvider.overrideWithValue(repository)],
+        overrides: [
+          localeRepositoryProvider.overrideWithValue(
+            _TestLocaleRepository(const Locale('zh')),
+          ),
+          taskRepositoryProvider.overrideWithValue(repository),
+        ],
         child: const App(),
       ),
     );
@@ -48,4 +57,43 @@ void main() {
     expect(find.text('验证保存'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('switches the app language immediately', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          localeRepositoryProvider.overrideWithValue(
+            _TestLocaleRepository(const Locale('zh')),
+          ),
+          taskRepositoryProvider.overrideWithValue(
+            InMemoryTaskRepository(fetchDelay: Duration.zero),
+          ),
+        ],
+        child: const App(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.settings_outlined));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('English'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Preferences'), findsOneWidget);
+    expect(find.text('Overview'), findsOneWidget);
+  });
+}
+
+class _TestLocaleRepository implements LocaleRepository {
+  _TestLocaleRepository(this.locale);
+
+  Locale? locale;
+
+  @override
+  Future<Locale?> load() async => locale;
+
+  @override
+  Future<void> save(Locale? locale) async {
+    this.locale = locale;
+  }
 }

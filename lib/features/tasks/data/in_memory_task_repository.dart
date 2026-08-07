@@ -6,22 +6,8 @@ class InMemoryTaskRepository implements TaskRepository {
     List<TaskItem>? seed,
     DateTime Function()? now,
     this.fetchDelay = const Duration(milliseconds: 250),
-  }) : _items = List.of(seed ?? _defaultItems),
+  }) : _items = List.of(seed ?? const []),
        _now = now ?? DateTime.now;
-
-  static final List<TaskItem> _defaultItems = [
-    TaskItem(
-      id: 'architecture',
-      title: '阅读 docs/architecture.md',
-      createdAt: DateTime(2026, 8, 6, 9),
-      isCompleted: true,
-    ),
-    TaskItem(
-      id: 'feature',
-      title: '从 features/tasks 复制一个新功能骨架',
-      createdAt: DateTime(2026, 8, 6, 9, 30),
-    ),
-  ];
 
   final List<TaskItem> _items;
   final DateTime Function() _now;

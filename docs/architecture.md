@@ -15,6 +15,7 @@ View -> ViewModel -> Repository interface <- Repository implementation -> Data s
 2. `lib/app/app.dart` 组装主题、本地化和路由。
 3. `lib/app/router.dart` 通过 `ShellRoute` 提供移动端 NavigationBar 与宽屏 NavigationRail。
 4. `ThemeController` 异步读取主题偏好，读取完成前使用系统主题。
+5. `LocaleController` 读取语言偏好；空值表示跟随操作系统。
 
 ## 环境与配置
 
@@ -49,6 +50,7 @@ View -> ViewModel -> Repository interface <- Repository implementation -> Data s
 - `theme/`：Material 3 主题、业务语义色与间距令牌。
 - `config/`：环境参数读取、类型转换和启动校验。
 - `logging/`：日志抽象；业务代码不直接绑定第三方上报 SDK。
+- `localization/`：语言选择状态及其持久化，不包含具体业务文案。
 - `network/`：Dio 配置、超时和基础日志拦截器。
 - `errors/`：跨层可识别的异常基类。
 - `widgets/`：不含具体业务语义的通用组件。
@@ -78,6 +80,15 @@ Provider 的生命周期应尽可能贴近使用方。全局 Provider 仅用于�
 - `AppSemanticColors` 负责 success、warning、info、border 等业务语义。
 - `AppSpacing` 统一页面和组件间距。
 - `ThemeController` 只保存 ThemeMode 字符串，避免持久化不可迁移的 ThemeData。
+
+## 多语言
+
+- 使用 Flutter 官方 `gen_l10n`，翻译源位于 `lib/l10n/*.arb`。
+- `app_zh.arb` 是模板文件；新增 key 时必须同步补齐 `app_en.arb`。
+- View 通过 `context.l10n` 获取文案，不在 Widget 中硬编码用户可见字符串。
+- `LocaleController` 只持久化语言代码；`null` 表示跟随系统。
+- Repository 返回的用户数据不随界面语言切换。服务端错误应转换为稳定错误码，再由 presentation 映射为本地化文案；domain/data 不依赖 `AppLocalizations`。
+- 修改 ARB 后运行 `flutter gen-l10n`，生成文件位于 `lib/l10n/generated/`。
 
 ## 新增 feature
 

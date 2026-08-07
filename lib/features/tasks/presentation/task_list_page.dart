@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_semantic_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/page_layout.dart';
+import '../../../l10n/l10n.dart';
 import '../domain/task_item.dart';
 import 'task_list_view_model.dart';
 
@@ -15,19 +16,19 @@ class TaskListPage extends ConsumerWidget {
     final tasks = ref.watch(taskListViewModelProvider);
 
     return PageLayout(
-      title: '任务列表示例',
-      subtitle: '完整展示 Repository、ViewModel 与异步 View 的协作方式。',
+      title: context.l10n.tasksTitle,
+      subtitle: context.l10n.tasksSubtitle,
       actions: [
         IconButton.filledTonal(
           onPressed: () =>
               ref.read(taskListViewModelProvider.notifier).refresh(),
-          tooltip: '刷新任务',
+          tooltip: context.l10n.refreshTasks,
           icon: const Icon(Icons.refresh),
         ),
         FilledButton.icon(
           onPressed: () => _showAddTaskDialog(context, ref),
           icon: const Icon(Icons.add),
-          label: const Text('新建任务'),
+          label: Text(context.l10n.newTask),
         ),
       ],
       child: tasks.when(
@@ -88,23 +89,23 @@ class _AddTaskDialogState extends State<_AddTaskDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('新建任务'),
+      title: Text(context.l10n.newTask),
       content: TextField(
         controller: _controller,
         autofocus: true,
         textInputAction: TextInputAction.done,
-        decoration: const InputDecoration(
-          labelText: '任务名称',
-          hintText: '例如：接入真实 REST API',
+        decoration: InputDecoration(
+          labelText: context.l10n.taskName,
+          hintText: context.l10n.taskNameHint,
         ),
         onSubmitted: (_) => _submit(),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('取消'),
+          child: Text(context.l10n.cancel),
         ),
-        FilledButton(onPressed: _submit, child: const Text('创建')),
+        FilledButton(onPressed: _submit, child: Text(context.l10n.create)),
       ],
     );
   }
@@ -127,7 +128,7 @@ class _TaskList extends StatelessWidget {
       return Card(
         child: Padding(
           padding: EdgeInsets.all(context.spacing.xl),
-          child: const Center(child: Text('暂无任务，创建一条试试。')),
+          child: Center(child: Text(context.l10n.emptyTasks)),
         ),
       );
     }
@@ -174,10 +175,12 @@ class _TaskTile extends StatelessWidget {
               : null,
         ),
       ),
-      subtitle: Text(item.isCompleted ? '已完成' : '待处理'),
+      subtitle: Text(
+        item.isCompleted ? context.l10n.completed : context.l10n.pending,
+      ),
       trailing: IconButton(
         onPressed: onDelete,
-        tooltip: '删除任务',
+        tooltip: context.l10n.deleteTask,
         color: context.semanticColors.warning,
         icon: const Icon(Icons.delete_outline),
       ),
@@ -208,7 +211,7 @@ class _ErrorState extends StatelessWidget {
             FilledButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: const Text('重试'),
+              label: Text(context.l10n.retry),
             ),
           ],
         ),

@@ -2,46 +2,51 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/page_layout.dart';
+import '../../../l10n/l10n.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
-  static const _dependencies = [
+  List<_Dependency> _dependencies(BuildContext context) => [
     _Dependency(
       name: 'flutter_riverpod',
       version: '^3.4.2',
-      role: '状态管理与依赖注入',
-      reason: '让 ViewModel 可测试、依赖可替换，并统一同步/异步状态表达。',
+      role: context.l10n.stateAndDi,
+      reason: context.l10n.riverpodReason,
     ),
     _Dependency(
       name: 'go_router',
       version: '^17.4.0',
-      role: '声明式路由',
-      reason: '支持深链、Web URL 与嵌套路由，ShellRoute 统一承载自适应导航。',
+      role: context.l10n.declarativeRouting,
+      reason: context.l10n.goRouterReason,
     ),
     _Dependency(
       name: 'dio',
       version: '^5.11.0',
-      role: 'HTTP 客户端',
-      reason: '提供拦截器、超时、取消请求和灵活适配器，便于建设统一网络层。',
+      role: context.l10n.httpClient,
+      reason: context.l10n.dioReason,
     ),
     _Dependency(
       name: 'shared_preferences',
       version: '^2.5.5',
-      role: '轻量本地配置',
-      reason: '使用 SharedPreferencesAsync 保存主题等非敏感偏好，避免旧缓存 API。',
+      role: context.l10n.lightweightSettings,
+      reason: context.l10n.sharedPreferencesReason,
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final dependencies = _dependencies(context);
     return PageLayout(
-      title: '工程说明',
-      subtitle: '依赖保持精简，每个包只解决一个清晰问题。',
+      title: context.l10n.aboutTitle,
+      subtitle: context.l10n.aboutSubtitle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('MVVM 数据流', style: Theme.of(context).textTheme.titleLarge),
+          Text(
+            context.l10n.mvvmDataFlow,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           SizedBox(height: context.spacing.md),
           Card(
             child: Padding(
@@ -50,7 +55,10 @@ class AboutPage extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.spacing.lg),
-          Text('核心依赖', style: Theme.of(context).textTheme.titleLarge),
+          Text(
+            context.l10n.coreDependencies,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           SizedBox(height: context.spacing.md),
           LayoutBuilder(
             builder: (context, constraints) {
@@ -62,7 +70,7 @@ class AboutPage extends StatelessWidget {
                 spacing: context.spacing.md,
                 runSpacing: context.spacing.md,
                 children: [
-                  for (final dependency in _dependencies)
+                  for (final dependency in dependencies)
                     SizedBox(
                       width: width,
                       child: _DependencyCard(dependency: dependency),
@@ -75,10 +83,8 @@ class AboutPage extends StatelessWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.smart_toy_outlined),
-              title: const Text('AI 开发支持'),
-              subtitle: const Text(
-                'AGENTS.md 提供架构地图、分层约束、命令和完成标准；CLAUDE.md 与 Copilot 指令复用同一规则源。',
-              ),
+              title: Text(context.l10n.aiDevelopmentSupport),
+              subtitle: Text(context.l10n.aiDevelopmentDescription),
             ),
           ),
         ],
@@ -92,10 +98,10 @@ class _ArchitectureFlow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const steps = [
+    final steps = [
       ('View', 'ConsumerWidget'),
       ('ViewModel', 'Notifier / AsyncNotifier'),
-      ('Repository', '领域接口'),
+      ('Repository', context.l10n.domainInterface),
       ('Data Source', 'Dio / Local Storage'),
     ];
 
