@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Flutter: quality",
+      "type": "shell",
+      "command": "flutter analyze && flutter test",
+      "group": "test",
+      "problemMatcher": ["$dart-analyze"]
+    }
+  ]
+}
